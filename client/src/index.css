@@ -1,0 +1,258 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ── Patriotic Festival Design System ─────────────────────────────────────── */
+@theme inline {
+  /* Navy / Deep Blue */
+  --color-navy-950: oklch(16% 0.06 255);
+  --color-navy-900: oklch(20% 0.07 255);
+  --color-navy-800: oklch(26% 0.08 255);
+  --color-navy-700: oklch(33% 0.09 255);
+  --color-navy-600: oklch(40% 0.10 255);
+  --color-navy-500: oklch(48% 0.11 255);
+  --color-navy-400: oklch(57% 0.10 255);
+  --color-navy-300: oklch(67% 0.09 255);
+  --color-navy-200: oklch(80% 0.06 255);
+  --color-navy-100: oklch(92% 0.03 255);
+  --color-navy-50:  oklch(97% 0.01 255);
+
+  /* Patriot Red */
+  --color-patriot-950: oklch(18% 0.08 22);
+  --color-patriot-900: oklch(24% 0.10 22);
+  --color-patriot-800: oklch(31% 0.12 22);
+  --color-patriot-700: oklch(39% 0.14 22);
+  --color-patriot-600: oklch(47% 0.16 22);
+  --color-patriot-500: oklch(53% 0.20 22);
+  --color-patriot-400: oklch(62% 0.18 22);
+  --color-patriot-300: oklch(72% 0.15 22);
+  --color-patriot-200: oklch(84% 0.09 22);
+  --color-patriot-100: oklch(94% 0.04 22);
+  --color-patriot-50:  oklch(98% 0.01 22);
+
+  /* Gold / Accent */
+  --color-gold-900: oklch(30% 0.08 75);
+  --color-gold-700: oklch(50% 0.12 75);
+  --color-gold-500: oklch(68% 0.16 75);
+  --color-gold-400: oklch(76% 0.15 75);
+  --color-gold-300: oklch(84% 0.12 75);
+  --color-gold-200: oklch(91% 0.08 75);
+  --color-gold-100: oklch(96% 0.04 75);
+
+  /* Semantic tokens */
+  --color-background: oklch(99% 0.005 255);
+  --color-foreground: oklch(15% 0.04 255);
+  --color-card: oklch(100% 0 0);
+  --color-card-foreground: oklch(15% 0.04 255);
+  --color-popover: oklch(100% 0 0);
+  --color-popover-foreground: oklch(15% 0.04 255);
+  --color-primary: oklch(26% 0.08 255);
+  --color-primary-foreground: oklch(99% 0 0);
+  --color-secondary: oklch(96% 0.02 255);
+  --color-secondary-foreground: oklch(26% 0.08 255);
+  --color-muted: oklch(96% 0.01 255);
+  --color-muted-foreground: oklch(52% 0.04 255);
+  --color-accent: oklch(53% 0.20 22);
+  --color-accent-foreground: oklch(99% 0 0);
+  --color-destructive: oklch(53% 0.20 22);
+  --color-destructive-foreground: oklch(99% 0 0);
+  --color-border: oklch(90% 0.02 255);
+  --color-input: oklch(90% 0.02 255);
+  --color-ring: oklch(26% 0.08 255);
+
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --font-display: "Cinzel", "Playfair Display", serif;
+
+  /* Radius */
+  --radius: 0.5rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 oklch(0% 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 oklch(0% 0 0 / 0.10), 0 1px 2px -1px oklch(0% 0 0 / 0.10);
+  --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.10), 0 2px 4px -2px oklch(0% 0 0 / 0.10);
+  --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.10), 0 4px 6px -4px oklch(0% 0 0 / 0.10);
+  --shadow-xl: 0 20px 25px -5px oklch(0% 0 0 / 0.10), 0 8px 10px -6px oklch(0% 0 0 / 0.10);
+  --shadow-2xl: 0 25px 50px -12px oklch(0% 0 0 / 0.25);
+}
+
+/* ── Base Layer ────────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: oklch(80% 0.04 255); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: oklch(60% 0.06 255); }
+
+  /* Focus ring */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: oklch(26% 0.08 255 / 0.15);
+  }
+
+  /* Borders */
+  * { border-color: var(--color-border); }
+
+  /* Container */
+  .container {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  /* Flex min-size reset */
+  .flex { min-width: 0; min-height: 0; }
+}
+
+/* ── Utility Classes ───────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Patriotic gradient text */
+  .text-gradient-patriot {
+    background: linear-gradient(135deg, oklch(26% 0.08 255), oklch(53% 0.20 22));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Gold shimmer text */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, oklch(50% 0.12 75), oklch(76% 0.15 75), oklch(50% 0.12 75));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Hero overlay */
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      oklch(16% 0.06 255 / 0.7) 0%,
+      oklch(16% 0.06 255 / 0.5) 50%,
+      oklch(16% 0.06 255 / 0.85) 100%
+    );
+  }
+
+  /* Stars pattern background */
+  .bg-stars {
+    background-color: oklch(16% 0.06 255);
+    background-image: radial-gradient(circle, oklch(99% 0 0 / 0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Patriotic stripe accent */
+  .stripe-accent {
+    background: linear-gradient(90deg, oklch(53% 0.20 22) 0%, oklch(53% 0.20 22) 33%, oklch(99% 0 0) 33%, oklch(99% 0 0) 66%, oklch(26% 0.08 255) 66%);
+  }
+
+  /* Section divider */
+  .section-divider {
+    height: 4px;
+    background: linear-gradient(90deg, oklch(53% 0.20 22), oklch(68% 0.16 75), oklch(26% 0.08 255));
+    border-radius: 2px;
+  }
+
+  /* Card hover lift */
+  .card-lift {
+    transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  /* Button press */
+  .btn-press:active {
+    transform: scale(0.97);
+    transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* Animate fade-up */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-up {
+    animation: fade-up 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.5s ease both;
+  }
+
+  /* Stagger delays */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+
+  /* Countdown digit */
+  .countdown-digit {
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Timeline connector */
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, oklch(53% 0.20 22), oklch(26% 0.08 255));
+    transform: translateX(-50%);
+  }
+
+  /* Prose overrides */
+  .prose-festival {
+    --tw-prose-body: oklch(25% 0.04 255);
+    --tw-prose-headings: oklch(16% 0.06 255);
+    --tw-prose-lead: oklch(40% 0.05 255);
+    --tw-prose-links: oklch(40% 0.10 255);
+    --tw-prose-bold: oklch(16% 0.06 255);
+    --tw-prose-counters: oklch(53% 0.20 22);
+    --tw-prose-bullets: oklch(53% 0.20 22);
+    --tw-prose-hr: oklch(90% 0.02 255);
+    --tw-prose-quotes: oklch(16% 0.06 255);
+    --tw-prose-quote-borders: oklch(53% 0.20 22);
+  }
+}

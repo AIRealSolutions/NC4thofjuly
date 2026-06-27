@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1782591615330,
+      "tag": "0000_empty_marvex",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1782591777169,
+      "tag": "0001_minor_lila_cheney",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1782593796342,
+      "tag": "0002_tiresome_doctor_doom",
+      "breakpoints": true
+    }
+  ]
+}
