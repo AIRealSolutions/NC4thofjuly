@@ -91,8 +91,23 @@ export const paradeParticipants = mysqlTable("parade_participants", {
     "vehicle",
     "walking_group",
     "equestrian",
+    "shriners",
     "other",
   ]).default("other").notNull(),
+  // Shriners-specific fields
+  shrinersTempleName: varchar("shrinersTempleName", { length: 256 }),
+  shrinersUnitType: mysqlEnum("shrinersUnitType", [
+    "mini_cars",
+    "motorcycles",
+    "clown_unit",
+    "marching",
+    "color_guard",
+    "band",
+    "go_karts",
+    "other",
+  ]),
+  shrinersVehicleCount: int("shrinersVehicleCount"),
+  shrinersSpecialEquipment: text("shrinersSpecialEquipment"),
   description: text("description"),
   // Contact info
   contactFirstName: varchar("contactFirstName", { length: 128 }).notNull(),

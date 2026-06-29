@@ -25,6 +25,11 @@ import MarshalCheckpoint from "./pages/parade/MarshalCheckpoint";
 import UnitTracker from "./pages/parade/UnitTracker";
 import ParadeDayControl from "./pages/admin/ParadeDayControl";
 
+// Shriners pages
+import ShrinersSignup from "./pages/ShrinersSignup";
+import ShrinersRenew from "./pages/ShrinersRenew";
+import AdminShriners from "./pages/admin/AdminShriners";
+
 // Admin pages
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminEvents from "./pages/admin/AdminEvents";
@@ -46,6 +51,8 @@ function Router() {
       <Route path="/parade" component={Parade} />
       <Route path="/parade/register" component={ParadeRegister} />
       <Route path="/parade/renew" component={ParadeRenew} />
+      <Route path="/parade/shriners" component={ShrinersSignup} />
+      <Route path="/parade/shriners/renew" component={ShrinersRenew} />
       <Route path="/volunteer" component={Volunteer} />
       <Route path="/committees" component={Committees} />
 
@@ -79,6 +86,9 @@ function Router() {
       </Route>
       <Route path="/admin/parade-day">
         {() => <AdminGuard><ParadeDayControl /></AdminGuard>}
+      </Route>
+      <Route path="/admin/shriners">
+        {() => <AdminGuard><AdminShriners /></AdminGuard>}
       </Route>
 
       {/* Fallback */}

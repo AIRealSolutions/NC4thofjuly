@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flag, Search, CheckCircle, XCircle, Clock, Loader2, Download, Eye } from "lucide-react";
+import { Flag, Search, CheckCircle, XCircle, Clock, Loader2, Download, Eye, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -19,13 +19,14 @@ const STATUS_COLORS: Record<string, string> = {
 
 const ENTRY_TYPE_LABELS: Record<string, string> = {
   float: "Float", marching_band: "Marching Band", vehicle: "Vehicle",
-  walking_group: "Walking Group", equestrian: "Equestrian", other: "Other",
+  walking_group: "Walking Group", equestrian: "Equestrian", shriners: "Shriners", other: "Other",
 };
 
 export default function AdminParade() {
   const [search, setSearch] = useState("");
   const [yearFilter, setYearFilter] = useState(String(new Date().getFullYear()));
   const [statusFilter, setStatusFilter] = useState("all");
+  const [typeTab, setTypeTab] = useState<"all" | "shriners" | "standard">("all");
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
 
   const utils = trpc.useUtils();
@@ -38,17 +39,20 @@ export default function AdminParade() {
     onError: (e) => toast.error(e.message),
   });
 
-  const filtered = entries?.filter((e) =>
-    !search || e.entryName.toLowerCase().includes(search.toLowerCase()) ||
-    e.contactEmail.toLowerCase().includes(search.toLowerCase()) ||
-    `${e.contactFirstName} ${e.contactLastName}`.toLowerCase().includes(search.toLowerCase())
-  ) ?? [];
+  const filtered = entries?.filter((e) => {
+    const matchSearch = !search || e.entryName.toLowerCase().includes(search.toLowerCase()) ||
+      e.contactEmail.toLowerCase().includes(search.toLowerCase()) ||
+      `${e.contactFirstName} ${e.contactLastName}`.toLowerCase().includes(search.toLowerCase());
+    const matchType = typeTab === "all" || (typeTab === "shriners" ? e.entryType === "shriners" : e.entryType !== "shriners");
+    return matchSearch && matchType;
+  }) ?? [];
 
   const counts = {
     all: entries?.length ?? 0,
     pending: entries?.filter((e) => e.status === "pending").length ?? 0,
     approved: entries?.filter((e) => e.status === "approved").length ?? 0,
     rejected: entries?.filter((e) => e.status === "rejected").length ?? 0,
+    shriners: entries?.filter((e) => e.entryType === "shriners").length ?? 0,
   };
 
   return (
@@ -75,6 +79,25 @@ export default function AdminParade() {
             <SelectItem value="waitlisted">Waitlisted</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      {/* Type Tabs */}
+      <div className="flex gap-2 mb-5">
+        {(["all", "shriners", "standard"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setTypeTab(t)}
+            className={cn(
+              "flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+              typeTab === t
+                ? t === "shriners" ? "bg-gold-500 text-white" : "bg-navy-800 text-white"
+                : "bg-white border border-border text-navy-700 hover:bg-slate-50"
+            )}
+          >
+            {t === "shriners" && <Star className="w-3.5 h-3.5" />}
+            {t === "all" ? `All Entries (${counts.all})` : t === "shriners" ? `Shriners (${counts.shriners})` : `Standard (${counts.all - counts.shriners})`}
+          </button>
+        ))}
       </div>
 
       {/* Summary Cards */}
@@ -113,13 +136,19 @@ export default function AdminParade() {
               </thead>
               <tbody className="divide-y divide-border">
                 {filtered.map((entry) => (
-                  <tr key={entry.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={entry.id} className={cn("hover:bg-slate-50 transition-colors", entry.entryType === "shriners" && "bg-amber-50/60 hover:bg-amber-50")}>
                     <td className="px-5 py-3">
-                      <p className="font-medium text-navy-900">{entry.entryName}</p>
+                      <div className="flex items-center gap-1.5">
+                        {entry.entryType === "shriners" && <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />}
+                        <p className="font-medium text-navy-900">{entry.entryName}</p>
+                      </div>
                       {entry.organization && <p className="text-xs text-muted-foreground">{entry.organization}</p>}
+                      {entry.entryType === "shriners" && entry.shrinersTempleName && (
+                        <p className="text-xs text-amber-600">{entry.shrinersTempleName}</p>
+                      )}
                     </td>
                     <td className="px-4 py-3 hidden md:table-cell">
-                      <Badge className="bg-navy-100 text-navy-700 text-xs">{ENTRY_TYPE_LABELS[entry.entryType] ?? entry.entryType}</Badge>
+                      <Badge className={cn("text-xs", entry.entryType === "shriners" ? "bg-amber-100 text-amber-800" : "bg-navy-100 text-navy-700")}>{ENTRY_TYPE_LABELS[entry.entryType] ?? entry.entryType}</Badge>
                     </td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       <p className="text-xs text-navy-800">{entry.contactFirstName} {entry.contactLastName}</p>

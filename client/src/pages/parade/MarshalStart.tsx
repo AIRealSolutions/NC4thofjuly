@@ -99,7 +99,7 @@ export default function MarshalStart() {
           </div>
           <div>
             <h1 className="text-xl font-bold">Marshal — Start Line</h1>
-            <p className="text-sm text-white/50 mt-1">E. Moore St & Atlantic Ave</p>
+            <p className="text-sm text-white/50 mt-1">Atlantic Ave & E Moore St — Parade heads WEST</p>
           </div>
           <p className="text-sm text-white/60">Enter your name to begin managing the parade start.</p>
           <Input
@@ -131,7 +131,7 @@ export default function MarshalStart() {
           </div>
           <div>
             <h1 className="text-base font-bold">Start Line Marshal</h1>
-            <p className="text-xs text-white/40">E. Moore & Atlantic Ave · {marshalName}</p>
+            <p className="text-xs text-white/40">Atlantic Ave & E Moore St · Parade heads WEST · {marshalName}</p>
           </div>
         </div>
         <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border ${

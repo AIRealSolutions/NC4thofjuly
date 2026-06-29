@@ -56,3 +56,14 @@
 - [x] Bulk import approved participants as units
 - [x] Admin sidebar Live Parade Links section
 - [x] Run tests and save checkpoint
+
+## Shriners Special Group
+- [x] Add `shriners` entry type to parade schema (parade_entries + parade_units)
+- [x] Add Shriner-specific fields: temple name, unit type, member count, vehicle count, special equipment
+- [x] Create /parade/shriners public signup page with Shriners branding
+- [x] Create /parade/shriners/renew returning Shriner renewal page
+- [x] Add Shriners CTA section to the public Parade page
+- [x] Add AdminShriners management page in back-office
+- [x] Auto-assign Shriner units to S Atlantic Ave staging zone
+- [x] Update Live Parade Board to highlight Shriner units distinctively (fez icon / gold accent)
+- [x] Add Shriners tab to Admin Parade Entries page

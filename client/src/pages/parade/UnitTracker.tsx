@@ -223,13 +223,13 @@ export default function UnitTracker() {
               {liveUnit.status === "called" && (
                 <div className="bg-amber-500/20 border border-amber-500/40 rounded-xl p-4 text-center">
                   <div className="text-amber-300 font-bold text-lg">⚡ You've been called!</div>
-                  <div className="text-amber-200/70 text-sm mt-1">Please proceed to the start line at E. Moore & Atlantic Ave.</div>
+                  <div className="text-amber-200/70 text-sm mt-1">Please proceed to the start line at Atlantic Ave &amp; E Moore St.</div>
                 </div>
               )}
               {liveUnit.status === "marching" && (
                 <div className="bg-green-500/20 border border-green-500/40 rounded-xl p-4 text-center">
                   <div className="text-green-300 font-bold text-lg">🎉 You're marching!</div>
-                  <div className="text-green-200/70 text-sm mt-1">Enjoy the parade! Disband at Fodale Ave / Nursing Home.</div>
+                  <div className="text-green-200/70 text-sm mt-1">Enjoy the parade! Disband on Fodale Ave near the cemetery.</div>
                 </div>
               )}
               {liveUnit.status === "completed" && (
@@ -330,8 +330,9 @@ export default function UnitTracker() {
               Search for your unit number or name above to see your live parade status, staging location, and estimated call time.
             </p>
             <div className="text-xs text-white/30 space-y-1">
-              <p>Parade starts at E. Moore St & Atlantic Ave</p>
-              <p>Disbands at Fodale Ave / Nursing Home</p>
+              <p>Starts at Atlantic Ave &amp; E Moore St — heads WEST</p>
+              <p>Moore St → Right on Howe St → Right on Fodale Ave</p>
+              <p>Disbands on Fodale Ave near the cemetery</p>
             </div>
           </div>
         )}

@@ -24,7 +24,7 @@ const PARADE_RULES = [
   "Animals must be under control at all times with handlers.",
   "Staging areas will be assigned upon registration approval.",
   "Check-in begins at 7:00 AM on July 4th at the designated staging area.",
-  "The parade steps off at 10:00 AM sharp from the staging area on Lord Street.",
+  "The parade steps off at 10:00 AM sharp from Atlantic Ave & E Moore St.",
 ];
 
 export default function Parade() {
@@ -89,15 +89,15 @@ export default function Parade() {
               <h2 className="text-3xl font-serif text-navy-900 mb-4">Route & Staging</h2>
               <div className="section-divider w-16 mb-6" />
               <p className="text-muted-foreground leading-relaxed mb-6">
-                The parade route winds through the heart of historic downtown Southport, passing the waterfront and ending near Franklin Square Park. Spectators line both sides of the route for the best views.
+                The parade begins at the intersection of Atlantic Avenue and East Moore Street, travels <strong>west on Moore Street</strong>, turns <strong>right (north) onto Howe Street</strong>, then turns <strong>right onto Fodale Avenue</strong> — passing through the nursing home parking lot before disbanding near the cemetery on Fodale Avenue.
               </p>
 
               <div className="space-y-4 mb-8">
                 {[
-                  { step: "1", label: "Staging Area", desc: "Lord Street & Howe Street — check-in begins at 7:00 AM", color: "bg-gold-400" },
-                  { step: "2", label: "Parade Start", desc: "Lord Street heading south toward the waterfront", color: "bg-patriot-500" },
-                  { step: "3", label: "Waterfront", desc: "Turn onto Bay Street along the Cape Fear River", color: "bg-navy-600" },
-                  { step: "4", label: "Disbanding Area", desc: "Near Franklin Square Park — entries disband here", color: "bg-green-500" },
+                  { step: "1", label: "Parade Start — Atlantic Ave & E Moore St", desc: "Units step off heading WEST on E Moore Street. Check-in begins at 7:00 AM; parade steps off at 10:00 AM.", color: "bg-gold-400" },
+                  { step: "2", label: "Turn Right — Moore St & Howe St", desc: "Units turn RIGHT (north) onto Howe Street. Marshal stationed at this intersection.", color: "bg-patriot-500" },
+                  { step: "3", label: "Turn Right — Howe St & Fodale Ave", desc: "Units turn RIGHT onto Fodale Avenue toward the nursing home. Marshal stationed here.", color: "bg-navy-600" },
+                  { step: "4", label: "Disband — Fodale Ave near Cemetery", desc: "Units pass through the nursing home parking lot and disband on Fodale Ave near the cemetery.", color: "bg-green-600" },
                 ].map((s) => (
                   <div key={s.step} className="flex items-start gap-4">
                     <div className={`w-8 h-8 rounded-full ${s.color} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
@@ -117,7 +117,7 @@ export default function Parade() {
                   <div>
                     <p className="font-semibold text-navy-900 text-sm mb-1">Parking for Participants</p>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      Designated parking for parade participants is available at the Southport Community Building lot and along Moore Street. Parking assignments are provided with your registration confirmation. Float staging is on Lord Street between Howe and Nash Streets.
+                      Staging assignments are provided with your registration confirmation. Shriners stage on <strong>S Atlantic Ave</strong>; politicians on <strong>N Atlantic Ave</strong>. Remaining entries stage on <strong>E Moore St</strong> in double lanes (left and right) extending toward Rhett Street. Specific staging spots are assigned by the parade marshal.
                     </p>
                   </div>
                 </div>
@@ -131,13 +131,14 @@ export default function Parade() {
                 <span className="text-sm font-medium">Parade Route — Downtown Southport, NC</span>
               </div>
               <iframe
-                title="Parade Route Map"
+                title="Parade Route Map — Southport NC"
                 width="100%"
                 height="420"
                 style={{ border: 0 }}
                 loading="lazy"
                 allowFullScreen
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3283.9!2d-78.0145!3d33.9207!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89aa0e1a2b3c4d5e%3A0x1234567890abcdef!2sSouthport%2C%20NC%2028461!5e0!3m2!1sen!2sus!4v1234567890"
+                referrerPolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps/embed?pb=!1m58!1m12!1m3!1d1641.9!2d-78.0210!3d33.9195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m43!3e2!4m5!1s0x89aa0e1a2b3c4d5e%3A0x1!2sAtlantic+Ave+%26+E+Moore+St%2C+Southport%2C+NC+28461!3m2!1d33.9185!2d-78.0158!4m5!1s0x89aa0e1a2b3c4d5e%3A0x2!2sMoore+St+%26+Howe+St%2C+Southport%2C+NC+28461!3m2!1d33.9185!2d-78.0210!4m5!1s0x89aa0e1a2b3c4d5e%3A0x3!2sHowe+St+%26+Fodale+Ave%2C+Southport%2C+NC+28461!3m2!1d33.9215!2d-78.0210!4m5!1s0x89aa0e1a2b3c4d5e%3A0x4!2sFodale+Ave%2C+Southport%2C+NC+28461!3m2!1d33.9225!2d-78.0195!5e0!3m2!1sen!2sus!4v1751060000000"
               />
             </div>
           </div>
@@ -167,6 +168,61 @@ export default function Parade() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Shriners Special Group CTA */}
+      <section className="py-16 bg-gradient-to-br from-gold-50 to-amber-50 border-y border-gold-200">
+        <div className="container">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-gold-500 flex items-center justify-center shadow-md">
+                    <Star className="w-6 h-6 text-white fill-white" />
+                  </div>
+                  <div>
+                    <p className="font-display text-xs tracking-widest text-gold-700 uppercase">Special Group</p>
+                    <h2 className="text-2xl font-serif text-navy-900">Shriners International</h2>
+                  </div>
+                </div>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  Shriner units are honored guests of the NC 4th of July Parade and receive a <strong>dedicated staging area on S Atlantic Ave</strong>, reserved exclusively for Shriners International temple units. Mini cars, motorcycles, clown units, marching units, color guards, and bands are all welcome.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link href="/parade/shriners">
+                    <Button className="bg-gold-500 hover:bg-gold-600 text-white gap-2 btn-press">
+                      <Star className="w-4 h-4 fill-white" />
+                      New Shriner Registration
+                    </Button>
+                  </Link>
+                  <Link href="/parade/shriners/renew">
+                    <Button variant="outline" className="border-gold-400 text-gold-700 hover:bg-gold-50 gap-2 btn-press">
+                      <ChevronRight className="w-4 h-4" />
+                      Returning Shriner Renewal
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { label: "Mini Cars", icon: Car },
+                  { label: "Motorcycles", icon: Car },
+                  { label: "Clown Units", icon: Users },
+                  { label: "Marching Units", icon: Flag },
+                  { label: "Color Guard", icon: Flag },
+                  { label: "Bands", icon: Music },
+                ].map(({ label, icon: Icon }) => (
+                  <div key={label} className="bg-white rounded-xl border border-gold-200 p-3 flex items-center gap-2 shadow-sm">
+                    <div className="w-8 h-8 rounded-lg bg-gold-100 flex items-center justify-center shrink-0">
+                      <Icon className="w-4 h-4 text-gold-600" />
+                    </div>
+                    <span className="text-sm font-medium text-navy-900">{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

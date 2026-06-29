@@ -27,6 +27,7 @@ import {
   ChevronRight,
   Wifi,
   WifiOff,
+  Star,
 } from "lucide-react";
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -257,24 +258,38 @@ function UnitRow({
   eta: string | null;
 }) {
   const isActive = unit.status === "marching" || unit.status === "called";
+  const isShriner = unit.entryType === "shriners";
 
   return (
     <div
-      className={`grid grid-cols-[3rem_1fr_8rem_10rem_8rem] gap-3 px-4 py-3 items-center transition-colors ${
-        isActive ? "bg-green-900/20" : ""
+      className={`grid grid-cols-[3rem_1fr_8rem_10rem_8rem] gap-3 px-4 py-3 items-center transition-colors border-l-2 ${
+        isShriner
+          ? "border-l-amber-400 bg-amber-900/10"
+          : isActive
+          ? "border-l-green-500 bg-green-900/20"
+          : "border-l-transparent"
       }`}
     >
       {/* Unit number */}
-      <div className={`text-lg font-bold tabular-nums ${isActive ? "text-green-400" : "text-white/40"}`}>
+      <div className={`text-lg font-bold tabular-nums ${
+        isShriner ? "text-amber-400" : isActive ? "text-green-400" : "text-white/40"
+      }`}>
         {unit.unitNumber}
       </div>
 
       {/* Name + type */}
       <div>
-        <div className={`font-semibold text-sm ${isActive ? "text-white" : "text-white/80"}`}>
+        <div className={`font-semibold text-sm flex items-center gap-1.5 ${
+          isShriner ? "text-amber-200" : isActive ? "text-white" : "text-white/80"
+        }`}>
+          {isShriner && <Star className="w-3 h-3 text-amber-400 fill-amber-400 shrink-0" />}
           {unit.unitName}
         </div>
-        <div className="text-xs text-white/30 capitalize">{unit.entryType.replace("_", " ")}</div>
+        <div className={`text-xs capitalize ${
+          isShriner ? "text-amber-400/60" : "text-white/30"
+        }`}>
+          {isShriner ? "Shriners International" : unit.entryType.replace("_", " ")}
+        </div>
       </div>
 
       {/* Status badge */}

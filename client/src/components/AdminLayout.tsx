@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { href: "/admin/events", label: "Events", icon: Calendar },
   { href: "/admin/signups", label: "Event Signups", icon: UserCheck },
   { href: "/admin/parade", label: "Parade Entries", icon: Flag },
+  { href: "/admin/shriners", label: "⭐ Shriner Units", icon: Star },
   { href: "/admin/parade-day", label: "🎺 Parade Day Control", icon: Radio },
   { href: "/admin/volunteers", label: "Volunteers", icon: Users },
   { href: "/admin/committees", label: "Committees", icon: Shield },

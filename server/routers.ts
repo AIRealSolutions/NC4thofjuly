@@ -130,7 +130,7 @@ const paradeRouter = router({
       isReturning: z.boolean().default(false),
       year: z.number(),
       entryName: z.string().min(1),
-      entryType: z.enum(["float","marching_band","vehicle","walking_group","equestrian","other"]),
+      entryType: z.enum(["float","marching_band","vehicle","walking_group","equestrian","shriners","other"]),
       description: z.string().optional(),
       contactFirstName: z.string().min(1),
       contactLastName: z.string().min(1),
@@ -142,16 +142,26 @@ const paradeRouter = router({
       requiresElectricity: z.boolean().default(false),
       specialRequirements: z.string().optional(),
       parkingSpots: z.number().optional(),
+      stagingZone: z.string().optional(),
+      // Shriners-specific
+      shrinersTempleName: z.string().optional(),
+      shrinersUnitType: z.enum(["mini_cars","motorcycles","clown_unit","marching","color_guard","band","go_karts","other"]).optional(),
+      shrinersVehicleCount: z.number().optional(),
+      shrinersSpecialEquipment: z.string().optional(),
     }))
     .mutation(async ({ input }) => {
-      await db.createParadeParticipant(input);
+      // Enforce S Atlantic Ave staging for all Shriner units regardless of what the frontend sends
+      const enrichedInput = input.entryType === "shriners"
+        ? { ...input, stagingZone: "S Atlantic Ave" }
+        : input;
+      const result = await db.createParadeParticipant(enrichedInput);
       await logActivity({
-        action: input.isReturning ? "Parade renewal" : "New parade registration",
+        action: input.isReturning ? "Parade renewal" : (input.entryType === "shriners" ? "Shriner unit registration" : "New parade registration"),
         entityType: "parade",
         performedBy: `${input.contactFirstName} ${input.contactLastName}`,
         details: input.entryName,
       });
-      return { success: true };
+      return { success: true, id: result.insertId as number };
     }),
 
   checkReturning: publicProcedure

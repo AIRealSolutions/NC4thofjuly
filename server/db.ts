@@ -141,9 +141,10 @@ export async function updateSignupStatus(id: number, status: "pending" | "confir
 
 // ── Parade Participants ───────────────────────────────────────────────────────
 export async function createParadeParticipant(data: InsertParadeParticipant) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  await db.insert(paradeParticipants).values(data);
+  const dbConn = await getDb();
+  if (!dbConn) throw new Error("Database not available");
+  const result = await dbConn.insert(paradeParticipants).values(data);
+  return result[0] as { insertId: number };
 }
 
 export async function listParadeParticipants(opts?: { year?: number; status?: string }) {
