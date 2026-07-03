@@ -44,12 +44,15 @@ interface PinForm {
   checkpointId: string;
 }
 
+// Checkpoint options — value matches the actual checkpoint ID in the database
+// null/"" = Start Line (no checkpoint), others = checkpoint IDs
 const CHECKPOINT_OPTIONS = [
-  { value: "", label: "Start Line Marshal (E Moore & Atlantic)" },
-  { value: "1", label: "Checkpoint 1 — Moore & Howe St" },
-  { value: "2", label: "Checkpoint 2 — Howe & Fodale Ave" },
-  { value: "3", label: "Checkpoint 3 — Nursing Home Lot" },
-  { value: "4", label: "Checkpoint 4 — Fodale/Cemetery Disband" },
+  { value: "",      label: "Station 1 — Start Line (Atlantic Ave & E Moore St)" },
+  { value: "60001", label: "Station 2 — Howe St & Moore St" },
+  { value: "2",     label: "Station 3 — Howe St & West St" },
+  { value: "3",     label: "Station 4 — Howe St & 9th St" },
+  { value: "4",     label: "Station 5 — Howe St & Fodale Ave (Turn)" },
+  { value: "30001", label: "Station 6 — Nursing Home Parking Lot (Disband)" },
 ];
 
 export default function AdminMarshalPins() {

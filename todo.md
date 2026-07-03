@@ -86,3 +86,10 @@
 - [x] Admin UI: Last reset timestamp banner shown after each reset
 - [x] Broadcast reset event via Socket.IO (parade:reset + parade:state) so all connected clients refresh instantly
 - [x] Unit names and order preserved — only statuses and logs cleared
+
+## 6-Station Marshal Layout (Phase 9)
+- [x] Add 6th checkpoint (Howe St & Moore St) to parade_checkpoints DB table (routeOrder=2)
+- [x] Renumber all checkpoints: Start=1, Howe&Moore=2, Howe&West=3, Howe&9th=4, Howe&Fodale=5, Disband=6
+- [x] Update marshal PINs in DB to match all 6 stations with correct checkpointIds
+- [x] Update MarshalLogin.tsx STATIONS array with all 6 stations and correct routes
+- [x] Verify all 6 stations display and route correctly

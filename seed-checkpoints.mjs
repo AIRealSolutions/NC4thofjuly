@@ -1,10 +1,18 @@
 /**
- * Seed the 5 Southport parade route checkpoints for the NC 4th of July Festival.
+ * Seed the 6 Southport parade route checkpoints for the NC 4th of July Festival.
  * Run: node seed-checkpoints.mjs
  *
  * Route: Atlantic Ave & E Moore St → west on Moore → right (north) on Howe St
- *        → Howe & West St → Howe & 9th St → right on Fodale Ave
- *        → Nursing Home Parking Lot (disband)
+ *        → Howe & Moore St → Howe & West St → Howe & 9th St
+ *        → right on Fodale Ave → Nursing Home Parking Lot (disband)
+ *
+ * Stations:
+ *   1. START       — Atlantic Ave & E Moore St (start line)
+ *   2. HOWE/MOORE  — Howe St & Moore St
+ *   3. HOWE/WEST   — Howe St & West St
+ *   4. HOWE/9TH    — Howe St & 9th St
+ *   5. HOWE/FODALE — Howe St & Fodale Ave (turn point)
+ *   6. DISBAND     — Nursing Home Parking Lot, Fodale Ave
  */
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
@@ -22,14 +30,24 @@ const CHECKPOINTS = [
     routeOrder: 1,
   },
   {
+    name: "Howe St & Moore St",
+    shortName: "HOWE/MOORE",
+    description:
+      "Units turning north onto Howe St from Moore St. Marshal logs each unit as it passes.",
+    streetAddress: "Howe St & Moore St, Southport NC 28461",
+    lat: "33.9185",
+    lng: "-78.0185",
+    routeOrder: 2,
+  },
+  {
     name: "Howe St & West St",
     shortName: "HOWE/WEST",
     description:
-      "Units turning north on Howe St pass West Street. Marshal logs each unit as it passes.",
+      "Units continuing north on Howe St pass West Street. Marshal logs each unit as it passes.",
     streetAddress: "Howe St & West St, Southport NC 28461",
     lat: "33.9185",
-    lng: "-78.0175",
-    routeOrder: 2,
+    lng: "-78.0210",
+    routeOrder: 3,
   },
   {
     name: "Howe St & 9th St",
@@ -37,9 +55,9 @@ const CHECKPOINTS = [
     description:
       "Mid-route checkpoint on Howe St at 9th Street. Marshal logs each unit as it passes.",
     streetAddress: "Howe St & 9th St, Southport NC 28461",
-    lat: "33.9170",
-    lng: "-78.0175",
-    routeOrder: 3,
+    lat: "33.9215",
+    lng: "-78.0210",
+    routeOrder: 4,
   },
   {
     name: "Howe St & Fodale Ave — Turn Point",
@@ -47,9 +65,9 @@ const CHECKPOINTS = [
     description:
       "Units turn right onto Fodale Ave here. Marshal logs each unit making the turn.",
     streetAddress: "Howe St & Fodale Ave, Southport NC 28461",
-    lat: "33.9162",
-    lng: "-78.0175",
-    routeOrder: 4,
+    lat: "33.9225",
+    lng: "-78.0195",
+    routeOrder: 5,
   },
   {
     name: "Nursing Home Parking Lot — Parade End",
@@ -57,9 +75,9 @@ const CHECKPOINTS = [
     description:
       "Parade disbands in the nursing home parking lot off Fodale Ave. Final checkpoint — units are marked complete here.",
     streetAddress: "Nursing Home Parking Lot, Fodale Ave, Southport NC 28461",
-    lat: "33.9155",
-    lng: "-78.0175",
-    routeOrder: 5,
+    lat: null,
+    lng: null,
+    routeOrder: 6,
   },
 ];
 
@@ -99,7 +117,7 @@ try {
   }
 
   console.log("\n🎉 Checkpoint seed complete!");
-  console.log("\nParade Route:");
+  console.log("\nParade Route (6 stations):");
   CHECKPOINTS.forEach((cp) =>
     console.log(`  ${cp.routeOrder}. [${cp.shortName}] ${cp.streetAddress}`)
   );
