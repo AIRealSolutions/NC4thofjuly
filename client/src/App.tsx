@@ -23,6 +23,8 @@ import ParadeLiveBoard from "./pages/parade/ParadeLiveBoard";
 import MarshalStart from "./pages/parade/MarshalStart";
 import MarshalCheckpoint from "./pages/parade/MarshalCheckpoint";
 import UnitTracker from "./pages/parade/UnitTracker";
+import MarshalLogin from "./pages/parade/MarshalLogin";
+import StagingMarshal from "./pages/parade/StagingMarshal";
 import ParadeDayControl from "./pages/admin/ParadeDayControl";
 
 // Shriners pages
@@ -58,10 +60,12 @@ function Router() {
       <Route path="/committees" component={Committees} />
 
       {/* Live Parade Routes — public access for marshals & participants */}
+      <Route path="/parade/login" component={MarshalLogin} />
       <Route path="/parade/live" component={ParadeLiveBoard} />
       <Route path="/parade/marshal" component={MarshalStart} />
       <Route path="/parade/checkpoint/:checkpointId" component={MarshalCheckpoint} />
       <Route path="/parade/tracker" component={UnitTracker} />
+      <Route path="/parade/staging/:zone" component={StagingMarshal} />
 
       {/* Admin Routes — all protected by AdminGuard */}
       <Route path="/admin">

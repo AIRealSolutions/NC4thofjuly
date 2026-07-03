@@ -17,21 +17,23 @@ import {
   MapPin,
   Flag,
   ArrowLeft,
+  Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const YEAR = 2026;
 const SESSION_KEY = "marshal_pin_session";
 
-// Station definitions — matches checkpoint routeOrder in DB (6 stations)
-const STATIONS = [
+// Route marshal stations — matches checkpoint routeOrder in DB (6 stations)
+const ROUTE_STATIONS = [
   {
     id: "start",
     label: "Station 1 — Start Line",
     subtitle: "Atlantic Ave & E Moore St",
     icon: Flag,
     route: "/parade/marshal",
-    checkpointId: null,
+    checkpointId: null as number | null,
+    stagingZone: null as string | null,
     color: "from-emerald-900/60 to-emerald-950/60 border-emerald-500/30",
     iconColor: "text-emerald-400",
   },
@@ -41,7 +43,8 @@ const STATIONS = [
     subtitle: "Howe St & Moore St",
     icon: MapPin,
     route: "/parade/checkpoint/60001",
-    checkpointId: 60001,
+    checkpointId: 60001 as number | null,
+    stagingZone: null as string | null,
     color: "from-sky-900/60 to-sky-950/60 border-sky-500/30",
     iconColor: "text-sky-400",
   },
@@ -51,7 +54,8 @@ const STATIONS = [
     subtitle: "Howe St & West St",
     icon: MapPin,
     route: "/parade/checkpoint/2",
-    checkpointId: 2,
+    checkpointId: 2 as number | null,
+    stagingZone: null as string | null,
     color: "from-blue-900/60 to-blue-950/60 border-blue-500/30",
     iconColor: "text-blue-400",
   },
@@ -61,7 +65,8 @@ const STATIONS = [
     subtitle: "Howe St & 9th St",
     icon: MapPin,
     route: "/parade/checkpoint/3",
-    checkpointId: 3,
+    checkpointId: 3 as number | null,
+    stagingZone: null as string | null,
     color: "from-purple-900/60 to-purple-950/60 border-purple-500/30",
     iconColor: "text-purple-400",
   },
@@ -71,7 +76,8 @@ const STATIONS = [
     subtitle: "Howe St & Fodale Ave — Turn",
     icon: MapPin,
     route: "/parade/checkpoint/4",
-    checkpointId: 4,
+    checkpointId: 4 as number | null,
+    stagingZone: null as string | null,
     color: "from-amber-900/60 to-amber-950/60 border-amber-500/30",
     iconColor: "text-amber-400",
   },
@@ -81,11 +87,84 @@ const STATIONS = [
     subtitle: "Nursing Home Parking Lot, Fodale Ave",
     icon: MapPin,
     route: "/parade/checkpoint/30001",
-    checkpointId: 30001,
+    checkpointId: 30001 as number | null,
+    stagingZone: null as string | null,
     color: "from-red-900/60 to-red-950/60 border-red-500/30",
     iconColor: "text-red-400",
   },
 ];
+
+// Staging zone marshal stations
+const STAGING_STATIONS = [
+  {
+    id: "staging-s-atlantic",
+    label: "Staging — S. Atlantic (Shriners)",
+    subtitle: "Shriners staging area · S. Atlantic Ave",
+    icon: Layers,
+    route: "/parade/staging/S%20Atlantic%20(Shriners)",
+    checkpointId: null as number | null,
+    stagingZone: "S Atlantic (Shriners)" as string | null,
+    color: "from-purple-900/60 to-purple-950/60 border-purple-500/30",
+    iconColor: "text-purple-400",
+  },
+  {
+    id: "staging-n-atlantic",
+    label: "Staging — N. Atlantic (Politicians)",
+    subtitle: "Politicians & dignitaries · N. Atlantic Ave",
+    icon: Layers,
+    route: "/parade/staging/N%20Atlantic%20(Politicians)",
+    checkpointId: null as number | null,
+    stagingZone: "N Atlantic (Politicians)" as string | null,
+    color: "from-blue-900/60 to-blue-950/60 border-blue-500/30",
+    iconColor: "text-blue-400",
+  },
+  {
+    id: "staging-e-moore-left",
+    label: "Staging — E. Moore St Left Lane",
+    subtitle: "E. Moore St staging area · Left lane",
+    icon: Layers,
+    route: "/parade/staging/E%20Moore%20Left",
+    checkpointId: null as number | null,
+    stagingZone: "E Moore Left" as string | null,
+    color: "from-green-900/60 to-green-950/60 border-green-500/30",
+    iconColor: "text-green-400",
+  },
+  {
+    id: "staging-e-moore-right",
+    label: "Staging — E. Moore St Right Lane",
+    subtitle: "E. Moore St staging area · Right lane",
+    icon: Layers,
+    route: "/parade/staging/E%20Moore%20Right",
+    checkpointId: null as number | null,
+    stagingZone: "E Moore Right" as string | null,
+    color: "from-emerald-900/60 to-emerald-950/60 border-emerald-500/30",
+    iconColor: "text-emerald-400",
+  },
+  {
+    id: "staging-rhett-left",
+    label: "Staging — Rhett St Left Lane",
+    subtitle: "Rhett St overflow staging · Left lane",
+    icon: Layers,
+    route: "/parade/staging/Rhett%20St%20Left",
+    checkpointId: null as number | null,
+    stagingZone: "Rhett St Left" as string | null,
+    color: "from-amber-900/60 to-amber-950/60 border-amber-500/30",
+    iconColor: "text-amber-400",
+  },
+  {
+    id: "staging-rhett-right",
+    label: "Staging — Rhett St Right Lane",
+    subtitle: "Rhett St overflow staging · Right lane",
+    icon: Layers,
+    route: "/parade/staging/Rhett%20St%20Right",
+    checkpointId: null as number | null,
+    stagingZone: "Rhett St Right" as string | null,
+    color: "from-orange-900/60 to-orange-950/60 border-orange-500/30",
+    iconColor: "text-orange-400",
+  },
+];
+
+const STATIONS = [...ROUTE_STATIONS, ...STAGING_STATIONS];
 
 export default function MarshalLogin() {
   const [, navigate] = useLocation();
@@ -121,9 +200,16 @@ export default function MarshalLogin() {
   const verifyMutation = trpc.marshalPins.verify.useMutation({
     onSuccess: (result) => {
       if (!selectedStation) return;
-      // Validate checkpoint match
-      if (result.checkpointId !== selectedStation.checkpointId) {
+      // Validate checkpoint match for route stations
+      if (selectedStation.stagingZone === null && result.checkpointId !== selectedStation.checkpointId) {
         setError("This PIN is not assigned to the selected station.");
+        setPin(["", "", "", ""]);
+        setTimeout(() => inputRefs[0].current?.focus(), 50);
+        return;
+      }
+      // Validate staging zone match for staging stations
+      if (selectedStation.stagingZone !== null && (result as any).stagingZone !== selectedStation.stagingZone) {
+        setError("This PIN is not assigned to the selected staging zone.");
         setPin(["", "", "", ""]);
         setTimeout(() => inputRefs[0].current?.focus(), 50);
         return;
@@ -203,7 +289,36 @@ export default function MarshalLogin() {
             <p className="text-white/40 text-xs text-center uppercase tracking-widest mb-4">
               Select your station
             </p>
-            {STATIONS.map((station) => {
+            {/* Route Stations */}
+            <p className="text-white/30 text-xs uppercase tracking-widest mb-2 mt-2">Route Stations</p>
+            {ROUTE_STATIONS.map((station) => {
+              const Icon = station.icon;
+              return (
+                <button
+                  key={station.id}
+                  onClick={() => handleSelectStation(station)}
+                  className={`
+                    w-full flex items-center gap-4 p-4 rounded-2xl border bg-gradient-to-r
+                    ${station.color}
+                    hover:brightness-125 active:scale-[0.98]
+                    transition-all duration-150 text-left
+                  `}
+                >
+                  <div className={`flex-shrink-0 ${station.iconColor}`}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold text-sm">{station.label}</p>
+                    <p className="text-white/50 text-xs truncate">{station.subtitle}</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-white/30 flex-shrink-0" />
+                </button>
+              );
+            })}
+
+            {/* Staging Zone Stations */}
+            <p className="text-white/30 text-xs uppercase tracking-widest mb-2 mt-4">Staging Zone Marshals</p>
+            {STAGING_STATIONS.map((station) => {
               const Icon = station.icon;
               return (
                 <button

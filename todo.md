@@ -93,3 +93,21 @@
 - [x] Update marshal PINs in DB to match all 6 stations with correct checkpointIds
 - [x] Update MarshalLogin.tsx STATIONS array with all 6 stations and correct routes
 - [x] Verify all 6 stations display and route correctly
+
+## Staging Marshal Portal (Phase 10)
+- [x] Add Marshal Login quick-link button to Parade Day Control Center header
+- [x] Add stagingZone field to marshal_pins table (migration applied)
+- [x] Create Staging Marshal Portal page at /parade/staging/:zone (view units in zone, mark no-show, confirm present, add walk-up entries)
+- [x] Add tRPC procedure: paradeLive.stagingAddUnit for walk-up entries
+- [x] Extend MarshalPinGate to support stagingZone validation
+- [x] Update AdminMarshalPins.tsx to include stagingZone field in create/edit dialog
+- [x] Update MarshalLogin.tsx to include 6 staging zone stations (S Atlantic, N Atlantic, E Moore L/R, Rhett St L/R)
+- [x] Seed 6 default staging zone PINs in DB (7001-7006)
+- [x] Register /parade/staging/:zone route in App.tsx
+- [x] TypeScript: 0 errors, 21 tests passing
+
+## Staging Marshal Hardening (Future)
+- [ ] Protect stagingAddUnit server-side: require verified marshal PIN/session token (currently client-gated only)
+- [ ] Add explicit "Confirm Present" check-in action for units not yet confirmed (beyond restore-from-scratch)
+- [ ] Harden walk-up unit-number assignment with DB-level locking to prevent race conditions
+- [ ] Add vitest tests for stagingAddUnit auth, validation, and duplicate handling

@@ -427,6 +427,24 @@ const paradeLiveRouter = router({
     .input(z.object({ unitId: z.number().optional() }))
     .query(({ input }) => db.listCheckpointLogs(input.unitId)),
 
+  // Staging marshal: add a walk-up / late entry (PIN-gated on client, public procedure)
+  stagingAddUnit: publicProcedure
+    .input(z.object({
+      year: z.number(),
+      unitNumber: z.number(),
+      unitName: z.string(),
+      entryType: z.string().optional(),
+      contactName: z.string().optional(),
+      contactPhone: z.string().optional(),
+      stagingZone: z.string().optional(),
+      stagingSpot: z.string().optional(),
+      notes: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      await db.createParadeUnit({ ...input, status: "staged" });
+      return { success: true };
+    }),
+
   // ── Parade Day Reset (admin only) ─────────────────────────────────────────
   reset: adminProcedure
     .input(z.object({

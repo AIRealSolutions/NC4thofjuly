@@ -57,6 +57,7 @@ import {
   Clock,
   RotateCcw,
   AlertTriangle,
+  Shield,
 } from "lucide-react";
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -225,6 +226,12 @@ export default function ParadeDayControl() {
               <a href="/parade/marshal" target="_blank" rel="noopener noreferrer">
                 <Flag className="w-3.5 h-3.5 mr-1.5" />
                 Start Line
+              </a>
+            </Button>
+            <Button asChild variant="outline" size="sm" className="border-yellow-400/50 text-yellow-700 hover:bg-yellow-50">
+              <a href="/parade/login" target="_blank" rel="noopener noreferrer">
+                <Shield className="w-3.5 h-3.5 mr-1.5" />
+                Marshal Login
               </a>
             </Button>
             <Button

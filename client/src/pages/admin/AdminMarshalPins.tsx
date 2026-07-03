@@ -42,6 +42,7 @@ interface PinForm {
   label: string;
   marshalName: string;
   checkpointId: string;
+  stagingZone: string;
 }
 
 // Checkpoint options — value matches the actual checkpoint ID in the database
@@ -55,6 +56,17 @@ const CHECKPOINT_OPTIONS = [
   { value: "30001", label: "Station 6 — Nursing Home Parking Lot (Disband)" },
 ];
 
+// Staging zone options — used when creating staging marshal PINs
+const STAGING_ZONE_OPTIONS = [
+  { value: "",                       label: "(Not a staging zone)" },
+  { value: "S Atlantic (Shriners)",  label: "S. Atlantic — Shriners" },
+  { value: "N Atlantic (Politicians)", label: "N. Atlantic — Politicians" },
+  { value: "E Moore Left",           label: "E. Moore St — Left Lane" },
+  { value: "E Moore Right",          label: "E. Moore St — Right Lane" },
+  { value: "Rhett St Left",          label: "Rhett St — Left Lane" },
+  { value: "Rhett St Right",         label: "Rhett St — Right Lane" },
+];
+
 export default function AdminMarshalPins() {
   const [year] = useState(CURRENT_YEAR);
   const [showPins, setShowPins] = useState<Record<number, boolean>>({});
@@ -65,6 +77,7 @@ export default function AdminMarshalPins() {
     label: "",
     marshalName: "",
     checkpointId: "",
+    stagingZone: "",
   });
 
   const utils = trpc.useUtils();
@@ -102,7 +115,7 @@ export default function AdminMarshalPins() {
 
   const openCreate = () => {
     setEditId(null);
-    setForm({ pin: generatePin(), label: "", marshalName: "", checkpointId: "" });
+    setForm({ pin: generatePin(), label: "", marshalName: "", checkpointId: "", stagingZone: "" });
     setDialogOpen(true);
   };
 
@@ -113,6 +126,7 @@ export default function AdminMarshalPins() {
       label: pin.label,
       marshalName: pin.marshalName ?? "",
       checkpointId: pin.checkpointId ? String(pin.checkpointId) : "",
+      stagingZone: (pin as any).stagingZone ?? "",
     });
     setDialogOpen(true);
   };
@@ -127,6 +141,7 @@ export default function AdminMarshalPins() {
       label: form.label.trim(),
       marshalName: form.marshalName.trim() || undefined,
       checkpointId: form.checkpointId ? parseInt(form.checkpointId) : undefined,
+      stagingZone: form.stagingZone || undefined,
     };
 
     if (editId) {
@@ -298,7 +313,7 @@ export default function AdminMarshalPins() {
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-700 block mb-1">
-                  Checkpoint (leave blank for Start Line)
+                  Route Checkpoint (leave blank for Start Line or Staging)
                 </label>
                 <select
                   value={form.checkpointId}
@@ -309,6 +324,25 @@ export default function AdminMarshalPins() {
                     <option key={o.value} value={o.value}>{o.label}</option>
                   ))}
                 </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1">
+                  Staging Zone (for staging area marshals only)
+                </label>
+                <select
+                  value={form.stagingZone}
+                  onChange={(e) => setForm((f) => ({ ...f, stagingZone: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-500"
+                >
+                  {STAGING_ZONE_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+                {form.stagingZone && (
+                  <p className="text-xs text-purple-600 mt-1">
+                    This PIN will grant access to the <strong>{form.stagingZone}</strong> staging portal.
+                  </p>
+                )}
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-700 block mb-1">

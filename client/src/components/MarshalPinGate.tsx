@@ -8,6 +8,7 @@ interface PinResult {
   id: number;
   label: string;
   checkpointId: number | null;
+  stagingZone: string | null;
   marshalName: string | null;
   year: number;
 }
@@ -17,11 +18,13 @@ interface MarshalPinGateProps {
   children: (pin: PinResult) => React.ReactNode;
   /** Optional: if provided, only PINs linked to this checkpointId (or null for start-line) will be accepted */
   checkpointId?: number | null;
+  /** Optional: if provided, only PINs linked to this stagingZone will be accepted */
+  stagingZone?: string | null;
 }
 
 const SESSION_KEY = "marshal_pin_session";
 
-function getStoredSession(year: number, checkpointId?: number | null): PinResult | null {
+function getStoredSession(year: number, checkpointId?: number | null, stagingZone?: string | null): PinResult | null {
   try {
     const raw = sessionStorage.getItem(SESSION_KEY);
     if (!raw) return null;
@@ -35,16 +38,20 @@ function getStoredSession(year: number, checkpointId?: number | null): PinResult
     if (checkpointId !== undefined) {
       if (data.checkpointId !== checkpointId) return null;
     }
+    // If a specific staging zone is required, validate it matches
+    if (stagingZone !== undefined) {
+      if (data.stagingZone !== stagingZone) return null;
+    }
     return data;
   } catch {
     return null;
   }
 }
 
-export default function MarshalPinGate({ year, children, checkpointId }: MarshalPinGateProps) {
+export default function MarshalPinGate({ year, children, checkpointId, stagingZone }: MarshalPinGateProps) {
   const [pin, setPin] = useState(["", "", "", ""]);
   const [authenticated, setAuthenticated] = useState<PinResult | null>(() =>
-    getStoredSession(year, checkpointId)
+    getStoredSession(year, checkpointId, stagingZone)
   );
   const [error, setError] = useState("");
   const inputRefs = [
@@ -59,6 +66,13 @@ export default function MarshalPinGate({ year, children, checkpointId }: Marshal
       // Validate checkpoint match if required
       if (checkpointId !== undefined && result.checkpointId !== checkpointId) {
         setError("This PIN is not valid for this checkpoint station.");
+        setPin(["", "", "", ""]);
+        inputRefs[0].current?.focus();
+        return;
+      }
+      // Validate staging zone match if required
+      if (stagingZone !== undefined && (result as any).stagingZone !== stagingZone) {
+        setError("This PIN is not valid for this staging zone.");
         setPin(["", "", "", ""]);
         inputRefs[0].current?.focus();
         return;

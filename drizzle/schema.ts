@@ -300,6 +300,7 @@ export const marshalPins = mysqlTable("marshal_pins", {
   pin: varchar("pin", { length: 8 }).notNull(),           // 4-digit PIN
   label: varchar("label", { length: 128 }).notNull(),     // e.g. "Start Line", "Howe St Checkpoint"
   checkpointId: int("checkpointId"),                      // null = start-line marshal, otherwise links to checkpoint
+  stagingZone: varchar("stagingZone", { length: 128 }),    // null = route marshal; set for staging area marshals
   marshalName: varchar("marshalName", { length: 256 }),   // optional name for the marshal
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
