@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Star, Phone, Mail, MapPin, Facebook, Instagram, Youtube } from "lucide-react";
+import { Menu, X, Star, Phone, Mail, MapPin, Facebook, Instagram, Youtube, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -12,6 +12,10 @@ const NAV_LINKS = [
   { href: "/history", label: "History" },
   { href: "/volunteer", label: "Volunteer" },
   { href: "/committees", label: "Committees" },
+];
+
+const PARADE_QUICK_LINKS = [
+  { href: "/parade/find", label: "Find My Unit", icon: Search },
 ];
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -86,13 +90,13 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-0.5">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150",
+                  "px-2.5 py-2 rounded-md text-xs font-medium transition-colors duration-150 whitespace-nowrap",
                   location === link.href
                     ? "text-patriot-600 bg-patriot-50"
                     : scrolled || !isHome
@@ -107,6 +111,20 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-3">
+            {/* Find My Unit quick-access */}
+            <Link
+              href="/parade/find"
+              title="Find My Unit — look up your staging zone"
+              className={cn(
+                "hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-all duration-150 btn-press",
+                scrolled || !isHome
+                  ? "text-navy-700 border border-navy-200 hover:bg-navy-50"
+                  : "text-white/80 border border-white/30 hover:bg-white/10"
+              )}
+            >
+              <Search className="w-3.5 h-3.5" />
+              Find My Unit
+            </Link>
             <Link
               href="/parade/register"
               className={cn(
@@ -151,6 +169,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 </Link>
               ))}
               <div className="mt-3 pt-3 border-t border-border flex flex-col gap-2">
+                <Link href="/parade/find" className="px-4 py-3 bg-navy-800 text-white rounded-md text-sm font-semibold text-center hover:bg-navy-700 transition-colors flex items-center justify-center gap-2">
+                  <Search className="w-4 h-4" /> Find My Unit
+                </Link>
                 <Link href="/parade/register" className="px-4 py-3 bg-patriot-600 text-white rounded-md text-sm font-semibold text-center hover:bg-patriot-700 transition-colors">
                   Join the Parade
                 </Link>

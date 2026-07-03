@@ -111,3 +111,10 @@
 - [ ] Add explicit "Confirm Present" check-in action for units not yet confirmed (beyond restore-from-scratch)
 - [ ] Harden walk-up unit-number assignment with DB-level locking to prevent race conditions
 - [ ] Add vitest tests for stagingAddUnit auth, validation, and duplicate handling
+
+## Find My Unit Search (Phase 11)
+- [x] Add paradeLive.searchUnits public tRPC procedure (search by name, unit number, contact name)
+- [x] Build /parade/find public page — instant search with debounce, shows staging zone, spot, unit #, status
+- [x] Add "Find My Unit" link to public Parade page and top navigation
+- [x] Add "Find My Unit" quick-link to Parade Day Control sidebar (admin Live Parade Links)
+- [x] Register /parade/find route in App.tsx

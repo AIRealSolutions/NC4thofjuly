@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Flag, MapPin, Clock, Users, Star, ChevronRight, Info, Truck, Music, Car } from "lucide-react";
+import { Flag, MapPin, Clock, Users, Star, ChevronRight, Info, Truck, Music, Car, Shield, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import PublicLayout from "@/components/PublicLayout";
@@ -42,7 +42,7 @@ export default function Parade() {
           <p className="text-navy-300 max-w-xl mx-auto text-lg leading-relaxed">
             The centerpiece of the NC 4th of July Festival — floats, bands, military units, and thousands of spectators lining the streets of historic downtown Southport.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 flex-wrap">
             <Link href="/parade/register">
               <Button size="lg" className="bg-patriot-600 hover:bg-patriot-700 text-white btn-press gap-2">
                 <Star className="w-4 h-4" /> New Participant Registration
@@ -51,6 +51,11 @@ export default function Parade() {
             <Link href="/parade/renew">
               <Button size="lg" variant="outline" className="border-white/40 text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm btn-press gap-2">
                 <ChevronRight className="w-4 h-4" /> Returning Participant Renewal
+              </Button>
+            </Link>
+            <Link href="/parade/find">
+              <Button size="lg" variant="outline" className="border-gold-400/60 text-gold-300 bg-gold-500/10 hover:bg-gold-500/20 backdrop-blur-sm btn-press gap-2">
+                <Search className="w-4 h-4" /> Find My Unit
               </Button>
             </Link>
           </div>
@@ -272,6 +277,15 @@ export default function Parade() {
           <p className="mt-6 text-xs text-patriot-200">
             Questions? Contact the Parade Division: <a href="mailto:patriot@nc4thofjuly.com" className="underline hover:text-white">patriot@nc4thofjuly.com</a>
           </p>
+          <div className="mt-8 pt-6 border-t border-white/20">
+            <p className="text-patriot-200 text-sm mb-3">Are you a parade marshal?</p>
+            <Link href="/parade/login">
+              <Button size="sm" variant="outline" className="border-white/40 text-white hover:bg-white/10 gap-2">
+                <Shield className="w-4 h-4" />
+                Marshal Station Login
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     </PublicLayout>

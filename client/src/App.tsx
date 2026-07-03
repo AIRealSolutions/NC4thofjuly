@@ -25,6 +25,7 @@ import MarshalCheckpoint from "./pages/parade/MarshalCheckpoint";
 import UnitTracker from "./pages/parade/UnitTracker";
 import MarshalLogin from "./pages/parade/MarshalLogin";
 import StagingMarshal from "./pages/parade/StagingMarshal";
+import FindMyUnit from "./pages/parade/FindMyUnit";
 import ParadeDayControl from "./pages/admin/ParadeDayControl";
 
 // Shriners pages
@@ -66,6 +67,7 @@ function Router() {
       <Route path="/parade/checkpoint/:checkpointId" component={MarshalCheckpoint} />
       <Route path="/parade/tracker" component={UnitTracker} />
       <Route path="/parade/staging/:zone" component={StagingMarshal} />
+      <Route path="/parade/find" component={FindMyUnit} />
 
       {/* Admin Routes — all protected by AdminGuard */}
       <Route path="/admin">

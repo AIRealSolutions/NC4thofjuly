@@ -427,6 +427,14 @@ const paradeLiveRouter = router({
     .input(z.object({ unitId: z.number().optional() }))
     .query(({ input }) => db.listCheckpointLogs(input.unitId)),
 
+  // Public: search units by name, contact name, or unit number
+  searchUnits: publicProcedure
+    .input(z.object({
+      year: z.number(),
+      query: z.string().min(1).max(100).trim(),
+    }))
+    .query(({ input }) => db.searchParadeUnits(input.year, input.query, 25)),
+
   // Staging marshal: add a walk-up / late entry (PIN-gated on client, public procedure)
   stagingAddUnit: publicProcedure
     .input(z.object({

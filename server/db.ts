@@ -357,6 +357,27 @@ export async function getParadeUnit(id: number) {
   return rows[0];
 }
 
+export async function searchParadeUnits(year: number, query: string, limit = 20) {
+  const db = await getDb();
+  if (!db) return [];
+  const q = `%${query.trim()}%`;
+  const numQuery = parseInt(query.trim());
+  const conditions = [eq(paradeUnits.year, year)];
+  const textConditions = [
+    like(paradeUnits.unitName, q),
+    like(paradeUnits.contactName, q),
+  ];
+  if (!isNaN(numQuery)) {
+    textConditions.push(eq(paradeUnits.unitNumber, numQuery));
+  }
+  return db
+    .select()
+    .from(paradeUnits)
+    .where(and(eq(paradeUnits.year, year), or(...textConditions)))
+    .orderBy(asc(paradeUnits.unitNumber))
+    .limit(limit);
+}
+
 export async function createParadeUnit(data: InsertParadeUnit) {
   const db = await getDb();
   if (!db) throw new Error("DB unavailable");

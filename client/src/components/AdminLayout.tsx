@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import {
   LayoutDashboard, Calendar, Flag, Users, Crown, BookOpen, Star,
   LogOut, Menu, X, ChevronRight, Shield, Settings, FileText,
-  UserCheck, Megaphone, Radio, ExternalLink
+  UserCheck, Megaphone, Radio, ExternalLink, Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -28,9 +28,11 @@ const NAV_ITEMS = [
 ];
 
 const LIVE_LINKS = [
+  { href: "/parade/login", label: "Marshal Login Portal", icon: Shield },
   { href: "/parade/live", label: "Live Board", icon: Radio },
   { href: "/parade/marshal", label: "Start Line Marshal", icon: Flag },
   { href: "/parade/tracker", label: "Unit Tracker", icon: ExternalLink },
+  { href: "/parade/find", label: "Find My Unit", icon: Search },
 ];
 
 interface AdminLayoutProps {
