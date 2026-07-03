@@ -1,96 +1,109 @@
 /**
- * Seed the Southport NC parade route checkpoints.
+ * Seed the 5 Southport parade route checkpoints for the NC 4th of July Festival.
+ * Run: node seed-checkpoints.mjs
  *
- * Route:
- *   START:  E Moore St & Atlantic Ave (Staging area)
- *   CP 1:   Moore St & Howe St (turn right onto Howe)
- *   CP 2:   Howe St & Fodale Ave (turn right into nursing home / disbanding)
- *   END:    Fodale Ave / Nursing Home (disband)
- *
- * Staging zones (not checkpoints, but referenced in unit data):
- *   - S Atlantic Ave (Shriners)
- *   - N Atlantic Ave (Politicians)
- *   - E Moore St Left lane
- *   - E Moore St Right lane
- *   - Rhett St Left / Right
+ * Route: Atlantic Ave & E Moore St → west on Moore → right (north) on Howe St
+ *        → Howe & West St → Howe & 9th St → right on Fodale Ave
+ *        → Nursing Home Parking Lot (disband)
  */
-
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 dotenv.config();
 
-const conn = await mysql.createConnection(process.env.DATABASE_URL);
-
-const checkpoints = [
+const CHECKPOINTS = [
   {
-    name: "Start Line — E Moore & Atlantic",
+    name: "Parade Start — Atlantic Ave & E Moore St",
     shortName: "START",
-    description: "Parade start line. Marshal confirms each unit begins marching.",
-    streetAddress: "E Moore St & Atlantic Ave, Southport NC",
+    description:
+      "Parade begins heading west on Moore St. Marshal confirms each unit as it steps off.",
+    streetAddress: "Atlantic Ave & E Moore St, Southport NC 28461",
     lat: "33.9185",
     lng: "-78.0158",
     routeOrder: 1,
   },
   {
-    name: "Moore & Howe — Right Turn",
-    shortName: "HOWE",
-    description: "Units turn right onto Howe St. Marshal logs each unit passing.",
-    streetAddress: "Moore St & Howe St, Southport NC",
+    name: "Howe St & West St",
+    shortName: "HOWE/WEST",
+    description:
+      "Units turning north on Howe St pass West Street. Marshal logs each unit as it passes.",
+    streetAddress: "Howe St & West St, Southport NC 28461",
     lat: "33.9185",
     lng: "-78.0175",
     routeOrder: 2,
   },
   {
-    name: "Howe & Fodale — Right Turn",
-    shortName: "FODALE",
-    description: "Units turn right onto Fodale Ave toward the nursing home.",
-    streetAddress: "Howe St & Fodale Ave, Southport NC",
-    lat: "33.9162",
+    name: "Howe St & 9th St",
+    shortName: "HOWE/9TH",
+    description:
+      "Mid-route checkpoint on Howe St at 9th Street. Marshal logs each unit as it passes.",
+    streetAddress: "Howe St & 9th St, Southport NC 28461",
+    lat: "33.9170",
     lng: "-78.0175",
     routeOrder: 3,
   },
   {
-    name: "Disbanding — Nursing Home",
-    shortName: "DISBAND",
-    description: "Final checkpoint. Units disband here. Logging a unit at this checkpoint marks it completed.",
-    streetAddress: "Fodale Ave / Nursing Home, Southport NC",
-    lat: "33.9155",
+    name: "Howe St & Fodale Ave — Turn Point",
+    shortName: "HOWE/FODALE",
+    description:
+      "Units turn right onto Fodale Ave here. Marshal logs each unit making the turn.",
+    streetAddress: "Howe St & Fodale Ave, Southport NC 28461",
+    lat: "33.9162",
     lng: "-78.0175",
     routeOrder: 4,
   },
+  {
+    name: "Nursing Home Parking Lot — Parade End",
+    shortName: "DISBAND",
+    description:
+      "Parade disbands in the nursing home parking lot off Fodale Ave. Final checkpoint — units are marked complete here.",
+    streetAddress: "Nursing Home Parking Lot, Fodale Ave, Southport NC 28461",
+    lat: "33.9155",
+    lng: "-78.0175",
+    routeOrder: 5,
+  },
 ];
 
-// Check if already seeded
-const [existing] = await conn.execute("SELECT COUNT(*) as cnt FROM parade_checkpoints");
-if (existing[0].cnt > 0) {
-  console.log(`Checkpoints already seeded (${existing[0].cnt} found). Skipping.`);
+const conn = await mysql.createConnection(process.env.DATABASE_URL);
+
+try {
+  // Clear and re-seed all checkpoints
+  const [existing] = await conn.execute("SELECT COUNT(*) as cnt FROM parade_checkpoints");
+  console.log(`Existing checkpoints: ${existing[0].cnt} — clearing and re-seeding...`);
+
+  await conn.execute("DELETE FROM parade_checkpoints");
+
+  for (const cp of CHECKPOINTS) {
+    await conn.execute(
+      `INSERT INTO parade_checkpoints (name, shortName, description, streetAddress, lat, lng, routeOrder, isActive, createdAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 1, NOW())`,
+      [cp.name, cp.shortName, cp.description, cp.streetAddress, cp.lat, cp.lng, cp.routeOrder]
+    );
+    console.log(`  ✅ [${cp.shortName}] ${cp.name}`);
+  }
+
+  // Seed the 2026 parade session if it doesn't exist
+  const year = new Date().getFullYear();
+  const [sessions] = await conn.execute(
+    "SELECT id FROM parade_session WHERE year = ? LIMIT 1",
+    [year]
+  );
+  if (sessions.length === 0) {
+    await conn.execute(
+      `INSERT INTO parade_session (year, status, totalUnits, averageGapSeconds, notes, createdAt, updatedAt)
+       VALUES (?, 'setup', 101, 90, 'NC 4th of July Parade — Southport NC', NOW(), NOW())`,
+      [year]
+    );
+    console.log(`\n✅ Created ${year} parade session (setup mode, 90s gap)`);
+  } else {
+    console.log(`\nℹ️  ${year} parade session already exists — skipped.`);
+  }
+
+  console.log("\n🎉 Checkpoint seed complete!");
+  console.log("\nParade Route:");
+  CHECKPOINTS.forEach((cp) =>
+    console.log(`  ${cp.routeOrder}. [${cp.shortName}] ${cp.streetAddress}`)
+  );
+} finally {
   await conn.end();
   process.exit(0);
 }
-
-for (const cp of checkpoints) {
-  await conn.execute(
-    `INSERT INTO parade_checkpoints (name, shortName, description, streetAddress, lat, lng, routeOrder, isActive, createdAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, 1, NOW())`,
-    [cp.name, cp.shortName, cp.description, cp.streetAddress, cp.lat, cp.lng, cp.routeOrder]
-  );
-  console.log(`✓ Checkpoint seeded: ${cp.shortName} — ${cp.name}`);
-}
-
-// Also seed a default parade session for the current year
-const year = new Date().getFullYear();
-const [sessionCheck] = await conn.execute(
-  "SELECT COUNT(*) as cnt FROM parade_session WHERE year = ?",
-  [year]
-);
-if (sessionCheck[0].cnt === 0) {
-  await conn.execute(
-    `INSERT INTO parade_session (year, status, averageGapSeconds, createdAt, updatedAt)
-     VALUES (?, 'setup', 90, NOW(), NOW())`,
-    [year]
-  );
-  console.log(`✓ Parade session seeded for ${year} (status: setup, gap: 90s)`);
-}
-
-await conn.end();
-console.log("\n✅ Checkpoint seed complete!");

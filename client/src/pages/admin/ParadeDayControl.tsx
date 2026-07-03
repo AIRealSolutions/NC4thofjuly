@@ -75,8 +75,16 @@ export default function ParadeDayControl() {
   const [year] = useState(CURRENT_YEAR);
   const { state, connected, unitStatus, sessionUpdate } = useParadeSocket(year);
 
-  const session = state?.session;
-  const units = state?.units ?? [];
+  // tRPC fallback queries — load immediately without waiting for socket
+  const { data: fallbackState } = trpc.paradeLive.state.useQuery(
+    { year },
+    { refetchOnWindowFocus: false }
+  );
+
+  // Prefer live socket state; fall back to tRPC snapshot until socket connects
+  const session = state?.session ?? fallbackState?.session ?? null;
+  const units = (state?.units ?? fallbackState?.units ?? []) as ParadeUnit[];
+  const checkpoints = state?.checkpoints ?? fallbackState?.checkpoints ?? [];
 
   const [editUnit, setEditUnit] = useState<ParadeUnit | null>(null);
   const [showAddUnit, setShowAddUnit] = useState(false);
