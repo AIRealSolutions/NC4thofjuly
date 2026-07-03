@@ -27,10 +27,19 @@ import {
   Users,
   AlertTriangle,
 } from "lucide-react";
+import MarshalPinGate from "@/components/MarshalPinGate";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 export default function MarshalStart() {
+  return (
+    <MarshalPinGate year={CURRENT_YEAR} checkpointId={null}>
+      {() => <MarshalStartInner />}
+    </MarshalPinGate>
+  );
+}
+
+function MarshalStartInner() {
   const [year] = useState(CURRENT_YEAR);
   const [marshalName, setMarshalName] = useState(
     () => localStorage.getItem("marshalName") ?? ""

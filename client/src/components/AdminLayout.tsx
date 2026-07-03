@@ -19,6 +19,7 @@ const NAV_ITEMS = [
   { href: "/admin/parade", label: "Parade Entries", icon: Flag },
   { href: "/admin/shriners", label: "⭐ Shriner Units", icon: Star },
   { href: "/admin/parade-day", label: "🎺 Parade Day Control", icon: Radio },
+  { href: "/admin/marshal-pins", label: "🔐 Marshal PINs", icon: Shield },
   { href: "/admin/volunteers", label: "Volunteers", icon: Users },
   { href: "/admin/committees", label: "Committees", icon: Shield },
   { href: "/admin/heritage", label: "Heritage", icon: BookOpen },

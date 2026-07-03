@@ -31,6 +31,7 @@ import ShrinersRenew from "./pages/ShrinersRenew";
 import AdminShriners from "./pages/admin/AdminShriners";
 
 // Admin pages
+import AdminMarshalPins from "./pages/admin/AdminMarshalPins";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminParade from "./pages/admin/AdminParade";
@@ -89,6 +90,9 @@ function Router() {
       </Route>
       <Route path="/admin/shriners">
         {() => <AdminGuard><AdminShriners /></AdminGuard>}
+      </Route>
+      <Route path="/admin/marshal-pins">
+        {() => <AdminGuard><AdminMarshalPins /></AdminGuard>}
       </Route>
 
       {/* Fallback */}

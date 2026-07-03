@@ -55,6 +55,8 @@ import {
   Activity,
   CheckCircle2,
   Clock,
+  RotateCcw,
+  AlertTriangle,
 } from "lucide-react";
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -130,6 +132,24 @@ export default function ParadeDayControl() {
     },
   });
 
+  const [showResetDialog, setShowResetDialog] = useState(false);
+  // Persist last reset time — read from session on load, update after reset
+  const sessionLastReset = session?.lastResetAt
+    ? new Date(session.lastResetAt).toLocaleTimeString()
+    : null;
+  const [localResetAt, setLocalResetAt] = useState<string | null>(null);
+  const lastResetAt = localResetAt ?? sessionLastReset;
+
+  const resetParade = trpc.paradeLive.reset.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Parade reset! ${data.unitsReset} units restored to staged.`);
+      setLocalResetAt(new Date(data.resetAt).toLocaleTimeString());
+      setShowResetDialog(false);
+      setTimeout(refreshSocket, 300);
+    },
+    onError: () => toast.error("Reset failed. Please try again."),
+  });
+
   const bulkImport = trpc.paradeLive.bulkImportFromParticipants.useMutation({
     onSuccess: (data) => {
       toast.success(`Imported ${data.added} units from approved participants.`);
@@ -199,8 +219,65 @@ export default function ParadeDayControl() {
                 Start Line
               </a>
             </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-orange-300 text-orange-700 hover:bg-orange-50"
+              onClick={() => setShowResetDialog(true)}
+            >
+              <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
+              Reset for Test
+            </Button>
           </div>
         </div>
+
+        {/* Last reset banner */}
+        {lastResetAt && (
+          <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-50 border border-orange-200 text-orange-800 text-sm">
+            <RotateCcw className="w-4 h-4" />
+            <span>Parade reset at <strong>{lastResetAt}</strong> — all units back to Staged, session set to Setup. Ready for test run.</span>
+          </div>
+        )}
+
+        {/* Reset Confirmation Dialog */}
+        <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-orange-700">
+                <AlertTriangle className="w-5 h-5" />
+                Reset Parade for Testing?
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 py-2">
+              <p className="text-sm text-muted-foreground">
+                This will:
+              </p>
+              <ul className="text-sm space-y-1.5 list-none">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-orange-500" /> Reset all <strong>{units.length} units</strong> back to <strong>Staged</strong></li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-orange-500" /> Clear all checkpoint logs</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-orange-500" /> Set session status back to <strong>Setup</strong></li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-orange-500" /> Instantly update all connected Live Boards and Marshal pages</li>
+              </ul>
+              <p className="text-xs text-muted-foreground pt-1">
+                Unit names and order are preserved. Only statuses and logs are cleared.
+              </p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowResetDialog(false)}>Cancel</Button>
+              <Button
+                className="bg-orange-600 hover:bg-orange-700 text-white"
+                onClick={() => resetParade.mutate({ year, confirm: true })}
+                disabled={resetParade.isPending}
+              >
+                {resetParade.isPending ? (
+                  <><RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Resetting…</>
+                ) : (
+                  <><RotateCcw className="w-4 h-4 mr-2" /> Yes, Reset Parade</>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Session control */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

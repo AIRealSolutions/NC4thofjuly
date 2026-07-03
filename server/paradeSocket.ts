@@ -276,3 +276,11 @@ export async function getParadeState(year: number) {
 export function getSocketIO() {
   return io;
 }
+
+// Broadcast a full reset to all clients in the parade room
+export async function broadcastParadeReset(year: number) {
+  if (!io) return;
+  const state = await getParadeState(year);
+  io.to(`parade:${year}`).emit("parade:state", state);
+  io.to(`parade:${year}`).emit("parade:reset", { year, timestamp: Date.now() });
+}

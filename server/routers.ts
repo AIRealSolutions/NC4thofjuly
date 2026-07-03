@@ -6,7 +6,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import * as db from "./db";
 import { logActivity } from "./db";
-import { getParadeState } from "./paradeSocket";
+import { getParadeState, broadcastParadeReset } from "./paradeSocket";
 
 // ── Admin guard ───────────────────────────────────────────────────────────────
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -426,6 +426,73 @@ const paradeLiveRouter = router({
   checkpointLogs: publicProcedure
     .input(z.object({ unitId: z.number().optional() }))
     .query(({ input }) => db.listCheckpointLogs(input.unitId)),
+
+  // ── Parade Day Reset (admin only) ─────────────────────────────────────────
+  reset: adminProcedure
+    .input(z.object({
+      year: z.number(),
+      confirm: z.literal(true),  // Require explicit confirmation
+    }))
+    .mutation(async ({ input }) => {
+      const result = await db.resetParadeForYear(input.year);
+      // Broadcast reset to all connected clients so Live Board + Marshal pages refresh
+      await broadcastParadeReset(input.year);
+      return { success: true, unitsReset: result.unitsReset, resetAt: new Date().toISOString() };
+    }),
+});
+
+// ── Marshal PINs Router ─────────────────────────────────────────────────────
+const marshalPinsRouter = router({
+  // Verify a PIN (public — no login needed, used by marshal pages)
+  verify: publicProcedure
+    .input(z.object({ pin: z.string(), year: z.number() }))
+    .mutation(async ({ input }) => {
+      const result = await db.verifyMarshalPin(input.pin, input.year);
+      if (!result) throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid PIN" });
+      return result;
+    }),
+
+  // List all PINs for a year (admin only)
+  list: adminProcedure
+    .input(z.object({ year: z.number() }))
+    .query(({ input }) => db.listMarshalPins(input.year)),
+
+  // Create a PIN (admin only)
+  create: adminProcedure
+    .input(z.object({
+      year: z.number(),
+      pin: z.string().min(4).max(8),
+      label: z.string(),
+      checkpointId: z.number().optional(),
+      marshalName: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const id = await db.createMarshalPin(input);
+      return { success: true, id };
+    }),
+
+  // Update a PIN (admin only)
+  update: adminProcedure
+    .input(z.object({
+      id: z.number(),
+      pin: z.string().min(4).max(8).optional(),
+      label: z.string().optional(),
+      marshalName: z.string().optional(),
+      isActive: z.boolean().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const { id, ...data } = input;
+      await db.updateMarshalPin(id, data);
+      return { success: true };
+    }),
+
+  // Delete a PIN (admin only)
+  delete: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      await db.deleteMarshalPin(input.id);
+      return { success: true };
+    }),
 });
 
 // ── App Router ────────────────────────────────────────────────────────────────
@@ -447,6 +514,7 @@ export const appRouter = router({
   queens: queensRouter,
   admin: adminRouter,
   paradeLive: paradeLiveRouter,
+  marshalPins: marshalPinsRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -67,3 +67,22 @@
 - [x] Auto-assign Shriner units to S Atlantic Ave staging zone
 - [x] Update Live Parade Board to highlight Shriner units distinctively (fez icon / gold accent)
 - [x] Add Shriners tab to Admin Parade Entries page
+
+## Marshal PIN System & Real Lineup (Phase 8)
+- [x] Add marshal_pins table to schema (checkpoint_id, pin, label, active)
+- [x] Add backend: set/verify PIN procedures in routers
+- [x] Add MarshalPinGate component (PIN entry screen before checkpoint/marshal pages)
+- [x] Wrap /parade/marshal and /parade/checkpoint/:id with PIN gate
+- [x] Admin: manage marshal PINs at /admin/marshal-pins
+- [x] Clear all placeholder parade_units from DB
+- [x] Seed all 103 real units from ParadeLineupVersion5.0.xlsx
+- [x] Map staging zones from Excel to DB staging_zone field
+- [x] Remove OPEN placeholder units (100, 102) from DB — 101 real units in parade
+- [x] Push to GitHub (completed via Management UI export)
+
+## Parade Day Reset / Test Mode
+- [x] Backend: parade.reset procedure — clears checkpoint logs, resets all unit statuses to 'staged', resets session to 'setup'
+- [x] Admin UI: Reset for Test button in Parade Day Control header with confirmation dialog
+- [x] Admin UI: Last reset timestamp banner shown after each reset
+- [x] Broadcast reset event via Socket.IO (parade:reset + parade:state) so all connected clients refresh instantly
+- [x] Unit names and order preserved — only statuses and logs cleared

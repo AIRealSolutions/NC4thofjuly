@@ -10,6 +10,11 @@ import {
   timelineEntries, InsertTimelineEntry,
   festivalQueens, InsertFestivalQueen,
   activityLog, InsertActivityLog,
+  marshalPins, InsertMarshalPin, MarshalPin,
+  paradeUnits, InsertParadeUnit, ParadeUnit,
+  paradeCheckpoints, ParadeCheckpoint, InsertParadeCheckpoint,
+  paradeCheckpointLogs, InsertParadeCheckpointLog,
+  paradeSession, InsertParadeSession, ParadeSession,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -338,12 +343,6 @@ export async function getDashboardStats() {
 }
 
 // ── Live Parade: Units ────────────────────────────────────────────────────────
-import {
-  paradeUnits, InsertParadeUnit,
-  paradeCheckpoints, InsertParadeCheckpoint,
-  paradeCheckpointLogs,
-  paradeSession, InsertParadeSession,
-} from "../drizzle/schema";
 
 export async function listParadeUnits(year: number) {
   const db = await getDb();
@@ -424,4 +423,84 @@ export async function listCheckpointLogs(unitId?: number) {
     return db.select().from(paradeCheckpointLogs).where(eq(paradeCheckpointLogs.unitId, unitId)).orderBy(asc(paradeCheckpointLogs.passedAt));
   }
   return db.select().from(paradeCheckpointLogs).orderBy(asc(paradeCheckpointLogs.passedAt));
+}
+
+// ── Marshal PINs ──────────────────────────────────────────────────────────────
+export async function listMarshalPins(year: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(marshalPins).where(eq(marshalPins.year, year)).orderBy(asc(marshalPins.id));
+}
+
+export async function verifyMarshalPin(pin: string, year: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(marshalPins)
+    .where(and(eq(marshalPins.pin, pin), eq(marshalPins.year, year), eq(marshalPins.isActive, true)))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function createMarshalPin(data: InsertMarshalPin) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const result = await db.insert(marshalPins).values(data);
+  return (result as any)[0]?.insertId as number;
+}
+
+export async function updateMarshalPin(id: number, data: Partial<InsertMarshalPin>) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(marshalPins).set({ ...data, updatedAt: new Date() }).where(eq(marshalPins.id, id));
+}
+
+export async function deleteMarshalPin(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.delete(marshalPins).where(eq(marshalPins.id, id));
+}
+
+// ── Parade Day Reset ─────────────────────────────────────────────────────────
+/**
+ * Resets the parade to a clean "staged" state for testing.
+ * - Deletes all checkpoint logs for the year's units
+ * - Resets all unit statuses to "staged", clears entryTime/completedAt
+ * - Resets the session to "setup", clears startedAt/completedAt/currentUnit
+ */
+export async function resetParadeForYear(year: number): Promise<{ unitsReset: number }> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // 1. Get all unit IDs for this year
+  const units = await db.select({ id: paradeUnits.id }).from(paradeUnits).where(eq(paradeUnits.year, year));
+  const unitIds = units.map((u) => u.id);
+
+  // 2. Delete all checkpoint logs for those units
+  if (unitIds.length > 0) {
+    for (const uid of unitIds) {
+      await db.delete(paradeCheckpointLogs).where(eq(paradeCheckpointLogs.unitId, uid));
+    }
+  }
+
+  // 3. Reset all units to "staged"
+  await db
+    .update(paradeUnits)
+    .set({ status: "staged", startedAt: null, updatedAt: new Date() })
+    .where(eq(paradeUnits.year, year));
+
+  // 4. Reset the session and record the reset timestamp
+  const now = new Date();
+  await db
+    .update(paradeSession)
+    .set({
+      status: "setup",
+      startedAt: null,
+      completedAt: null,
+      currentUnitId: null,
+      lastResetAt: now,
+      updatedAt: now,
+    })
+    .where(eq(paradeSession.year, year));
+
+  return { unitsReset: unitIds.length };
 }

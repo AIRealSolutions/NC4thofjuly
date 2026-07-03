@@ -234,6 +234,7 @@ export const paradeUnits = mysqlTable("parade_units", {
   calledAt: timestamp("calledAt"),
   startedAt: timestamp("startedAt"),
   completedAt: timestamp("completedAt"),
+  lastResetAt: timestamp("lastResetAt"),
   notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -279,6 +280,7 @@ export const paradeSession = mysqlTable("parade_session", {
   status: mysqlEnum("status", ["setup", "staging", "active", "completed"]).default("setup").notNull(),
   startedAt: timestamp("startedAt"),
   completedAt: timestamp("completedAt"),
+  lastResetAt: timestamp("lastResetAt"),
   currentUnitId: int("currentUnitId"),   // the unit currently at the start line
   totalUnits: int("totalUnits").default(0),
   unitsCompleted: int("unitsCompleted").default(0),
@@ -290,3 +292,19 @@ export const paradeSession = mysqlTable("parade_session", {
 
 export type ParadeSession = typeof paradeSession.$inferSelect;
 export type InsertParadeSession = typeof paradeSession.$inferInsert;
+
+// ─── Marshal PINs ─────────────────────────────────────────────────────────────
+export const marshalPins = mysqlTable("marshal_pins", {
+  id: int("id").autoincrement().primaryKey(),
+  year: int("year").notNull(),
+  pin: varchar("pin", { length: 8 }).notNull(),           // 4-digit PIN
+  label: varchar("label", { length: 128 }).notNull(),     // e.g. "Start Line", "Howe St Checkpoint"
+  checkpointId: int("checkpointId"),                      // null = start-line marshal, otherwise links to checkpoint
+  marshalName: varchar("marshalName", { length: 256 }),   // optional name for the marshal
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MarshalPin = typeof marshalPins.$inferSelect;
+export type InsertMarshalPin = typeof marshalPins.$inferInsert;

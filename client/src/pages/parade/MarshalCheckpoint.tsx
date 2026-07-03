@@ -21,10 +21,21 @@ import {
   Clock,
   Search,
 } from "lucide-react";
+import MarshalPinGate from "@/components/MarshalPinGate";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 export default function MarshalCheckpoint() {
+  const params = useParams<{ checkpointId: string }>();
+  const checkpointId = parseInt(params.checkpointId ?? "1", 10);
+  return (
+    <MarshalPinGate year={CURRENT_YEAR} checkpointId={checkpointId}>
+      {() => <MarshalCheckpointInner />}
+    </MarshalPinGate>
+  );
+}
+
+function MarshalCheckpointInner() {
   const params = useParams<{ checkpointId: string }>();
   const checkpointId = parseInt(params.checkpointId ?? "1", 10);
 

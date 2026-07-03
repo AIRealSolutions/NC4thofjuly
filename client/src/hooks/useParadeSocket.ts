@@ -66,6 +66,7 @@ export interface ParadeSessionData {
   unitsCompleted: number | null;
   averageGapSeconds: number | null;
   notes: string | null;
+  lastResetAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
